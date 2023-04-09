@@ -110,11 +110,12 @@ namespace HideVolumeOSD
 				return;
 			}
 
+
 			if (notifyIcon != null)
 			{
-				volumePopup = new VolumePoup();
-
 				Application.ApplicationExit += Application_ApplicationExit;
+
+				volumePopup = new VolumePoup();
 
 				if (Settings.Default.HideOSD)                                                                                                                                                                                                                       
 					HideOSD();
@@ -259,6 +260,9 @@ namespace HideVolumeOSD
 
 		private void internalShowOSD(bool init = false)
         {
+			if (notifyIcon == null)
+				return;
+
 			float volume = volumePopup.getVolume();
 
 			hideTimer.Stop();
@@ -299,19 +303,19 @@ namespace HideVolumeOSD
 
 			ShowWindow(hWndInject, 9); // SW_RESTORE
 
+			// show window on the screen
 
+			internalShowOSD();
+			
 			if (notifyIcon != null)
-			{
-				// show window on the screen
-
-				internalShowOSD();
-
 				notifyIcon.Icon = Resources.Icon;
-			}
 		}
 
 		public void ShowMessage(String message, ToolTipIcon icon)
         {
+			if (notifyIcon == null)
+				return;
+
 			notifyIcon.ShowBalloonTip(5000, "HideVolumeOSD", message, icon);
 
 			long tickCountEnd = Environment.TickCount + 5000;
