@@ -71,7 +71,7 @@ namespace HideVolumeOSD
 
 		IntPtr hWndInject = IntPtr.Zero;
 	
-		VolumePoup volumePopup = new VolumePoup();
+		VolumePoup volumePopup;
 
 		System.Windows.Forms.Timer hideTimer = new System.Windows.Forms.Timer();		
 
@@ -110,10 +110,13 @@ namespace HideVolumeOSD
 				return;
 			}
 
-			Application.ApplicationExit += Application_ApplicationExit;
 
 			if (notifyIcon != null)
 			{
+				Application.ApplicationExit += Application_ApplicationExit;
+
+				volumePopup = new VolumePoup();
+
 				if (Settings.Default.HideOSD)                                                                                                                                                                                                                       
 					HideOSD();
 				else
@@ -134,14 +137,14 @@ namespace HideVolumeOSD
 				};
 
 				notifyIconIdentifier.cbSize = (uint)Marshal.SizeOf(notifyIconIdentifier);
-			}
 
-            KeyHook.VolumeKeyPressed += KeyHook_VolumeKeyPressed;
-            KeyHook.VolumeKeyReleased += KeyHook_VolumeKeyReleased;
+				KeyHook.VolumeKeyPressed += KeyHook_VolumeKeyPressed;
+				KeyHook.VolumeKeyReleased += KeyHook_VolumeKeyReleased;
 			
-			KeyHook.StartListening();
+				KeyHook.StartListening();
 			
-            hideTimer.Tick += HideTimer_Tick;			
+				hideTimer.Tick += HideTimer_Tick;			
+			}
 		}
 
         private IntPtr FindOSDWindow(bool bSilent)
@@ -257,6 +260,9 @@ namespace HideVolumeOSD
 
 		private void internalShowOSD(bool init = false)
         {
+			if (notifyIcon == null)
+				return;
+
 			float volume = volumePopup.getVolume();
 
 			hideTimer.Stop();
@@ -307,6 +313,9 @@ namespace HideVolumeOSD
 
 		public void ShowMessage(String message, ToolTipIcon icon)
         {
+			if (notifyIcon == null)
+				return;
+
 			notifyIcon.ShowBalloonTip(5000, "HideVolumeOSD", message, icon);
 
 			long tickCountEnd = Environment.TickCount + 5000;
