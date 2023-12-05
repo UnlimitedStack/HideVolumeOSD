@@ -39,7 +39,7 @@ namespace HideVolumeOSD
             }
             else
             {
-                volume = ((int)(getVolume() * 100)).ToString();
+                volume = (getVolume() * 100).ToString();
                 Refresh();
             }            
         }
